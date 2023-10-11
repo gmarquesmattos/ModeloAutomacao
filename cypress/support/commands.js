@@ -1,8 +1,8 @@
-require("cypress-xpath");
-require("cypress-plugin-tab");
-import "cypress-file-upload";
+//require("cypress-xpath");
+//require("cypress-plugin-tab");
+//import "cypress-file-upload";
 //import "cypress-wait-until";
-import { dataApi, postCooperativa, body } from "./login/data";
+//import { dataApi, postCooperativa, body } from "./login/data";
 
 Cypress.Screenshot.defaults({
   capture: "runner",
@@ -200,20 +200,20 @@ Cypress.Commands.add("tokenCorteva", (user, passwd) => {
     .as("token");
 });
 
-Cypress.Commands.add("getApi", (endPoint) => {
-  cy.get("@token")
-    .then((token) => {
-      cy.request({
-        method: "GET",
-        url: `${BASE_URL}${dataApi[endPoint]}`,
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-    })
-    .as("getResponse");
-});
+// Cypress.Commands.add("getApi", (endPoint) => {
+//   cy.get("@token")
+//     .then((token) => {
+//       cy.request({
+//         method: "GET",
+//         url: `${BASE_URL}${dataApi[endPoint]}`,
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//           "Content-Type": "application/json",
+//         },
+//       });
+//     })
+//     .as("getResponse");
+// });
 
 Cypress.Commands.add("validarStatusCode", (endPoint) => {
   cy.get("@getResponse").then((res) => {
