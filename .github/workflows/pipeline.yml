@@ -31,6 +31,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: npm install --verbose
+      - run: npm uninstall cypress@12.17.4
       - run: npm install cypress@12.14.0
 
       # Etapa de criação das pastas
