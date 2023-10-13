@@ -1,6 +1,8 @@
 name: Execução automação de testes
 
 on:
+  schedule:
+    - cron: '* 10 * * 1-5'
   pull_request:
     types: [synchronize]
     paths-ignore:
