@@ -153,6 +153,15 @@ jobs:
     runs-on: ubuntu-latest
     container: cypress/base:12.14.0
     steps:
+      - name: Clear npm cache
+        run: npm cache clean --force
+
+      - name: Update npm
+        run: npm install -g npm@latest
+
+      - name: Install sharp manually
+        run: npm install sharp
+
       - name: Checkout
         uses: actions/checkout@v2
         with:
@@ -200,3 +209,6 @@ jobs:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           PUBLISH_BRANCH: gh-pages
           PUBLISH_DIR: allure-history
+
+      - name: Show debug log
+        run: cat /github/home/.npm/_logs/2023-10-16T16_56_24_487Z-debug.log
