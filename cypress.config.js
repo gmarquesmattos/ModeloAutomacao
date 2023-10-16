@@ -37,7 +37,7 @@ module.exports = defineConfig({
     env: {
       allureReuseAfterSpec: true,
       allure: true,
-      allureResultsPath: "report/allure-report",
+      // allureResultsPath: "report/allure-report",
     },
     specPattern: "cypress/e2e/**/*.{feature,features}",
     baseUrl: "https://www.axa.com.br/",
