@@ -182,7 +182,7 @@ jobs:
       - name: Cypress run 
         uses: cypress-io/github-action@v2
         with: 
-           command: npm run cypress:allure || exit 0
+           command: npm run cypress:allure || exit 0 2>&1
       # - name: Cypress run
       #   id: cypress_run
       #   run: |
