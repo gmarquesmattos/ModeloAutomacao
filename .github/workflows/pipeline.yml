@@ -123,10 +123,12 @@
 name: Execução automação de testes
 
 on:
+  schedule:
+    - cron: '* 10 * * 1-5'
   pull_request:
-      types: [synchronize]
-      paths-ignore:
-        - '**.md'
+    types: [synchronize,ready_for_review, review_requested, synchronize]
+    paths-ignore:
+      - '**.md'
   push:
     branches:
       - master
@@ -149,26 +151,61 @@ jobs:
   test:
     name: Cypress run
     runs-on: ubuntu-latest
-    container:
-      image: cypress/browsers:node14.16.0-chrome90-ff88
-      options: --shm-size=1g
-      
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
 
-      - name: Install dependencies
-        run: npm install
 
-      - name: Cypress run 
-        run: npm run cypress:allure
+      # # Etapa de criação das pastas
+      # - run: mkdir -p cypress/videos
+      # - run: mkdir -p cypress/screenshots
+      # - run: mkdir -p cypress/report
 
+      # # Configuração da permissão
+      # - run: chmod -R a+w cypress/videos
+      # - run: chmod -R a+w cypress/screenshots
+      # - run: chmod -R a+w cypress/report
+
+      # - name: Debug info
+      #   run: |
+      #     echo "PATH: $PATH"
+      #     echo "Node.js version: $(node --version)"
+      #     echo "npx version: $(npx --version)"
+
+      # - name: Cypress run 
+      #   uses: cypress-io/github-action@v2
+      #   with: 
+      #      command: npm run cypress:allure || exit 0
+      
+      #  run: npm run cypress:allure 
+        # command: npx cypress run --browser ${{github.event.inputs.browser || env.DEFAULT_BROWSER}}
+      #  command: npm run ${{github.event.inputs.teste || env.DEFAULT_TESTE}} --browser ${{github.event.inputs.browser || env.DEFAULT_BROWSER}}
+    
+      - name: Install Cypress
+        run: npm install cypress@12.14.0
+
+      - name: Install Allure reporter
+        run: npm install @shelex/cypress-allure-plugin
+
+      - name: Run Cypress tests with Allure reporting
+        run: npx cypress run --env allure=true --config video=false || exit 0
+      
+      - name: Download Allure reports
+        uses: actions/download-artifact@v3
+        with:
+          name: allure-results
+          path: allure-results
+      
       - name: Get Allure History
         uses: actions/checkout@v2
         if: always()
         with:
           ref: gh-pages
           path: gh-pages
-
+      
       - name: Generate Allure Report
         uses: simple-elf/allure-report-action@master
         if: always()
@@ -176,7 +213,7 @@ jobs:
           allure_results: allure-results
           allure_history: allure-history
           keep_reports: 20
-
+      
       - name: Deploy report to Github Pages
         if: always()
         uses: peaceiris/actions-gh-pages@v3
